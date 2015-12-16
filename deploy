@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ssh_alias="superplant"
+site_folder="./*"
+remote_folder="/var/www/surfScrape"
+exclude="node_modules"
+
+rsync --exclude ${exclude} -a ${site_folder} ${ssh_alias}:${remote_folder} -v
+
+#maybe we can fix the node version thing here?
+ssh -t ${ssh_alias} "cd $remote_folder && /root/.nvm/versions/node/v5.2.0/bin/npm install"
