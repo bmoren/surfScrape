@@ -3,7 +3,7 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 
 var url = 'http://marine.weather.gov/MapClick.php?zoneid=LSZ162';
-var ifttt_key = 'b8C9ch__uR9GcUT2ErqxPD';
+var ifttt_key = 'XXXXXXXXXXXXXXXXXXXXX';
 
 var score  = 0;
 var thresh = 6;
