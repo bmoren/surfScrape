@@ -2,8 +2,8 @@ var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
 
-var url = 'http://marine.weather.gov/MapClick.php?zoneid=LSZ162';
-var ifttt_key = 'XXXXXXXXXXXXXXXXXXXXX';
+// var url = 'http://marine.weather.gov/MapClick.php?zoneid=LSZ162';
+var ifttt_key = '';
 
 var score  = 0;
 var thresh = 6;
@@ -11,17 +11,25 @@ var pWave = 0;
 var windDirections = ['North', 'Northeast', 'East'];
 var hasSent = fs.readFileSync('./email.txt', 'utf-8'); //store the email sender boolean...
 
-//reenable the email boolean checker.
-var now = new Date(); //stupid date thing.
-if (now.getHours() == 23){
-	//if 11pm then set to false....
-	fs.writeFileSync('./email.txt','false');
-	// process.exit(); //kill the script
-}
+var options = {
+  url: 'http://marine.weather.gov/MapClick.php?zoneid=LSZ162',
+  headers: {
+    'User-Agent': 'request'
+  }
+};
 
-request(url, function(error, resp, body){
+// //reenable the email boolean checker.
+// var now = new Date(); //stupid date thing.
+// if (now.getHours() == 23){
+// 	//if 11pm then set to false....
+// 	fs.writeFileSync('./email.txt','false');
+// 	// process.exit(); //kill the script
+// }
+
+request(options, function(error, resp, body){
 
 $ = cheerio.load(body);
+// console.log(body)
 
 $('.row-forecast .forecast-text', $('#detailed-forecast-body')).each(function(i,element){
 
@@ -95,26 +103,24 @@ console.log("score: "+score);
 // console.log(hasSent);
 
 if (score > thresh){
-	if (hasSent == 'false'){
+	// if (hasSent == 'false'){
 		//send email using ifttttttttttttt
 		console.log("working?");
-		request.post('https://maker.ifttt.com/trigger/surf/with/key/' + ifttt_key, {form:{ "value1" : url, "value2" : pWave, "value3" : score }}, function(error, response, body) {
+		request.post('https://maker.ifttt.com/trigger/surf/with/key/' + ifttt_key, {form:{ "value1" :"http://forecast.benmoren.com", "value2" : pWave, "value3" : score }}, function(error, response, body) {
       		console.log('Body response was ', body);
       		console.log('Error was ', error);
 
       		if(error == null){
       			//if there were no errors, the email sent, set the hasSent to true so we only get 1 email today.
 						console.log("email was sent");
-      			fs.writeFile('./email.txt','true');
+      			// fs.writeFile('./email.txt','true');
       		}
    		});
-	}
-
+	// }
 
 }else{
 	console.log("score is not high enough to take action");
 }
-
 
 
 
