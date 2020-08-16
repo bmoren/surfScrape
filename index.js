@@ -9,7 +9,6 @@ var score  = 0;
 var thresh = 6;
 var pWave = 0;
 var windDirections = ['North', 'Northeast', 'East'];
-var hasSent = fs.readFileSync('./email.txt', 'utf-8'); //store the email sender boolean...
 
 var options = {
   url: 'http://marine.weather.gov/MapClick.php?zoneid=LSZ162',
@@ -17,14 +16,6 @@ var options = {
     'User-Agent': 'request'
   }
 };
-
-// //reenable the email boolean checker.
-// var now = new Date(); //stupid date thing.
-// if (now.getHours() == 23){
-// 	//if 11pm then set to false....
-// 	fs.writeFileSync('./email.txt','false');
-// 	// process.exit(); //kill the script
-// }
 
 request(options, function(error, resp, body){
 
@@ -102,11 +93,13 @@ $('.row-forecast .forecast-text', $('#detailed-forecast-body')).each(function(i,
 console.log("score: "+score);
 // console.log(hasSent);
 
+// score = 10; //testing
+
 if (score > thresh){
 	// if (hasSent == 'false'){
 		//send email using ifttttttttttttt
 		console.log("working?");
-		request.post('https://maker.ifttt.com/trigger/surf/with/key/' + ifttt_key, {form:{ "value1" :"http://forecast.benmoren.com", "value2" : pWave, "value3" : score }}, function(error, response, body) {
+		request.post('https://maker.ifttt.com/trigger/surf/with/key/' + ifttt_key, {form:{"value1" : pWave, "value2" : score }}, function(error, response, body) {
       		console.log('Body response was ', body);
       		console.log('Error was ', error);
 
